@@ -45,3 +45,7 @@ jobs:
 
       - name: Terraform Apply
         run: terraform -chdir=${{ steps.extract.outputs.resource_path }} apply -auto-approve
+      - name: Debug extracted values
+        run: |
+          echo "Branch: ${{ steps.extract.outputs.branch }}"
+          echo "Resource Path: ${{ steps.extract.outputs.resource_path }}"
