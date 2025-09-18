@@ -38,20 +38,20 @@ body:
     validations:
       required: true
 
-  - name: Extract inputs from issue
-    id: extract
-    run: |
-      echo "${{ github.event.issue.body }}" > issue.txt
+  # - name: Extract inputs from issue
+  #   id: extract
+  #   run: |
+  #     echo "${{ github.event.issue.body }}" > issue.txt
 
-      # Extract resource path
-      path=$(grep -i 'Path to Resource:' issue.txt | cut -d':' -f2- | xargs)
-      branch=$(grep -i 'Branch Name:' issue.txt | cut -d':' -f2- | xargs)
+  #     # Extract resource path
+  #     path=$(grep -i 'Path to Resource:' issue.txt | cut -d':' -f2- | xargs)
+  #     branch=$(grep -i 'Branch Name:' issue.txt | cut -d':' -f2- | xargs)
 
-      # Validate path
-      if [ -z "$path" ]; then
-      echo "❌ Resource path is empty. Check issue formatting."
-      exit 1
-      fi
+  #     # Validate path
+  #     if [ -z "$path" ]; then
+  #     echo "❌ Resource path is empty. Check issue formatting."
+  #     exit 1
+  #     fi
 
-      echo "resource_path=$path" >> $GITHUB_OUTPUT
-      echo "branch=$branch" >> $GITHUB_OUTPUT
+  #     echo "resource_path=$path" >> $GITHUB_OUTPUT
+  #     echo "branch=$branch" >> $GITHUB_OUTPUT
