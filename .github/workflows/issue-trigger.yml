@@ -1,27 +1,34 @@
-# .github/workflows/on-issue-comment.yml
-
-name: Trigger on Issue Comment
+name: Deploy via Issue
 
 on:
-  issue_comment:
-    types: [created]
+  issues:
+    types: [opened]
 
 jobs:
   deploy:
-    if: contains(github.event.comment.body, '/deploy')
+    if: contains(github.event.issue.title, '[Terraform]')
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set resource path from comment
+      - name: Extract resource path from issue
         id: extract
         run: |
-          echo "Parsing comment: ${{ github.event.comment.body }}"
-          # Example: comment is "/deploy non-prod/us-west-2/dev/ec2"
-          path=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+          echo "Issue body: ${{ github.event.issue.body }}"
+          path=$(echo "${{ github.event.issue.body }}" | grep -i 'Path to Resource' | awk -F ':' '{print $2}' | xargs)
           echo "resource_path=$path" >> $GITHUB_OUTPUT
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::464134132245:role/githubaction
+          aws-region: us-west-2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
