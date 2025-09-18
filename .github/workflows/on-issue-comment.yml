@@ -1,0 +1,36 @@
+# .github/workflows/on-issue-comment.yml
+
+name: Trigger on Issue Comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  deploy:
+    if: contains(github.event.comment.body, '/deploy')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set resource path from comment
+        id: extract
+        run: |
+          echo "Parsing comment: ${{ github.event.comment.body }}"
+          # Example: comment is "/deploy non-prod/us-west-2/dev/ec2"
+          path=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+          echo "resource_path=$path" >> $GITHUB_OUTPUT
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform -chdir=${{ steps.extract.outputs.resource_path }} init
+
+      - name: Terraform Plan
+        run: terraform -chdir=${{ steps.extract.outputs.resource_path }} plan
+
+      - name: Terraform Apply
+        run: terraform -chdir=${{ steps.extract.outputs.resource_path }} apply -auto-approve
