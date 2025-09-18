@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: contains(github.event.issue.title, '[Terraform]')
+    if: contains(github.event.issue.title, '[terraform-aws-live-cloud-cicd-issue]')
     runs-on: ubuntu-latest
 
     permissions:
