@@ -1,0 +1,36 @@
+# .github/ISSUE_TEMPLATE/terraform-deploy.yml
+
+name: "Terraform Deployment"
+description: "Trigger a Terraform deployment for a specific resource"
+title: "[Terraform] <SUBJECT>"
+labels: ["terraform", "deployment"]
+body:
+  - type: input
+    id: subject
+    attributes:
+      label: Subject
+      description: Brief description of the resource or change
+      placeholder: "e.g., Create EC2 instance"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Select the target environment
+      options:
+        - dev
+        - staging
+        - prod
+    validations:
+      required: true
+
+  - type: input
+    id: resource_path
+    attributes:
+      label: Path to Resource
+      description: Relative path to the resource folder in the repo
+      placeholder: "e.g., non-prod/us-west-2/dev/ec2"
+    validations:
+      required: true
