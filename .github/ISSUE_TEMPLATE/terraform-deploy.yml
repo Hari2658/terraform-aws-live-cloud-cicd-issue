@@ -7,7 +7,6 @@ body:
     id: subject
     attributes:
       label: Subject
-      description: Brief description of the resource
       placeholder: "e.g., Create EC2 instance"
     validations:
       required: true
@@ -28,5 +27,13 @@ body:
     attributes:
       label: Path to Resource
       placeholder: "e.g., terraform/non-prod/us-west-2/dev/ec2"
+    validations:
+      required: true
+
+  - type: input
+    id: branch
+    attributes:
+      label: Branch Name
+      placeholder: "e.g., feature/my-ec2-change"
     validations:
       required: true

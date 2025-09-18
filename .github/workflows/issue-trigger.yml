@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: contains(github.event.issue.title, '[terraform-aws-live-cloud-cicd-issue]')
+    if: contains(github.event.issue.title, '[Terraform]')
     runs-on: ubuntu-latest
 
     permissions:
@@ -14,15 +14,19 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Extract resource path from issue
+      - name: Extract inputs from issue
         id: extract
         run: |
           echo "Issue body: ${{ github.event.issue.body }}"
           path=$(echo "${{ github.event.issue.body }}" | grep -i 'Path to Resource' | awk -F ':' '{print $2}' | xargs)
+          branch=$(echo "${{ github.event.issue.body }}" | grep -i 'Branch Name' | awk -F ':' '{print $2}' | xargs)
           echo "resource_path=$path" >> $GITHUB_OUTPUT
+          echo "branch=$branch" >> $GITHUB_OUTPUT
+
+      - name: Checkout code from branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract.outputs.branch }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
